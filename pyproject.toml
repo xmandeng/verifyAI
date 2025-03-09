@@ -1,0 +1,98 @@
+[project]
+name = "pastel"
+version = "0.1.0"
+description = "Agentic decision making model"
+authors = [
+    {name = "Xavier Mandeng",email = "xavier@mandeng.co"}
+]
+readme = "README.md"
+requires-python = ">=3.11,<4.0"
+dependencies = [
+    "requests (>=2.32.3,<3.0.0)",
+    "pandas (>=2.2.3,<3.0.0)",
+    "numpy (>=2.2.3,<3.0.0)",
+    "jupyter (>=1.1.1,<2.0.0)",
+    "ipython (>=9.0.2,<10.0.0)",
+    "matplotlib (>=3.10.1,<4.0.0)",
+    "seaborn (>=0.13.2,<0.14.0)",
+    "types-pillow (>=10.2.0.20240822,<11.0.0.0)",
+    "types-flask (>=1.1.6,<2.0.0)",
+    "websockets (>=15.0.1,<16.0.0)",
+    "aiohttp (>=3.11.13,<4.0.0)",
+    "pydantic (>=2.10.6,<3.0.0)",
+    "polars (>=1.24.0,<2.0.0)",
+    "plotly (>=6.0.0,<7.0.0)",
+    "dash (>=2.18.2,<3.0.0)",
+    "dash-bootstrap-components (>=1.7.1,<2.0.0)",
+    "fastapi (>=0.115.11,<0.116.0)",
+    "pydantic-settings (>=2.8.1,<3.0.0)",
+    "loguru (>=0.7.3,<0.8.0)",
+    "altair (>=5.5.0,<6.0.0)",
+    "pydantic-ai (>=0.0.36,<0.0.37)",
+    "httpx (>=0.28.1,<0.29.0)",
+    "openpyxl (>=3.1.5,<4.0.0)",
+    "nest-asyncio (>=1.6.0,<2.0.0)",
+    "logfire (>=3.7.1,<4.0.0)",
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+black = "^25.1.0"
+mypy = "^1.15.0"
+flake8 = "^7.1.2"
+pytest-cov = "^6.0.0"
+pre-commit = "^4.1.0"
+isort = "^6.0.1"
+ruff = "^0.9.10"
+pytest-asyncio = "^0.25.3"
+pandas-stubs = "^2.2.3.241126"
+types-requests = "^2.32.0.20250306"
+python-dotenv = "^1.0.1"
+pytest-mock = "^3.14.0"
+
+[tool.ruff]
+lint.ignore = ["D104"]
+lint.extend-select = ["E303"]
+lint.select = ["E", "F", "W"]
+line-length = 100
+lint.preview = true
+
+[tool.flake8]
+max-line-length = 100
+extend-ignore = ["E303", "E731", "E501", "N815", "E203"]
+
+[tool.black]
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+
+    # The following are specific to Black, you probably don't want those.
+    | blib2to3
+    | tests/data
+)/
+    '''
+line-length = 100
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+line_length = 100
+skip = ["docs/", "build/", ".git", ".eggs", "__pycache__"]
