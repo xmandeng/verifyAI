@@ -20,7 +20,7 @@ async def classify_insurance_image(image_obj: BaseImage) -> ImageType:
     - pricing: Time series of pricing changes
     - severity: Time series of Claim severity metrics
     - frequency: Time series of Claim frequency metrics
-    - cuts: Bubble plot showing Business segment analysis
+    - cuts: Scatter plot showing Business segment analysis
 
     Args:
         image_obj: BaseImage object containing the image to classify
