@@ -1,7 +1,7 @@
 from pydantic_ai import Agent, RunContext
 from pydantic_ai.models import KnownModelName
 
-from pastel.models import AssertionModel, GrammarValidation, InsightModel
+from pastel.models import AssertionModel, GrammarValidation, InputModel, InsightModel
 from pastel.prompts import CONCLUSION_PROMPT, EVIDENCE_PROMPT, GRAMMAR_PROMPT
 
 OPENAI_MODEL: KnownModelName = "openai:gpt-4o-mini"
@@ -11,12 +11,13 @@ assertion_agent = Agent(
     model=OPENAI_MODEL,
     system_prompt=CONCLUSION_PROMPT,
     result_type=AssertionModel,
+    deps_type=InputModel,
 )
 
 
-async def parse_assertion(insight: str) -> AssertionModel:
-    result = assertion_agent.run_sync(insight)
-    return result.data
+async def parse_assertion(input_model: InputModel) -> AssertionModel:
+    result = assertion_agent.run_sync(input_model.insight)
+    return AssertionModel(conclusion=result.data.conclusion, **input_model.model_dump())
 
 
 evidence_agent = Agent(
@@ -31,9 +32,12 @@ def build_evidence_prompt(ctx: RunContext[AssertionModel]) -> str:
     return EVIDENCE_PROMPT.format(conclusion=ctx.deps.conclusion)
 
 
-async def parse_evidence(claim: AssertionModel, insight: str) -> InsightModel:
-    result = evidence_agent.run_sync(insight, deps=claim)
-    return InsightModel(conclusion=claim.conclusion, evidence=result.data.evidence)
+async def parse_evidence(assertion: AssertionModel) -> InsightModel:
+    result = evidence_agent.run_sync(assertion.insight, deps=assertion)
+    return InsightModel(
+        evidence=result.data.evidence,
+        **assertion.model_dump(),
+    )
 
 
 grammar_agent = Agent(
