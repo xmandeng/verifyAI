@@ -2,20 +2,20 @@ from pydantic_ai import Agent, RunContext
 from pydantic_ai.models import KnownModelName
 
 from pastel.models import AssertionModel, GrammarValidation, InsightModel
-from pastel.prompts import EVIDENCE_PROMPT, GRAMMAR_PROMPT, SUBJECT_PROMPT
+from pastel.prompts import CONCLUSION_PROMPT, EVIDENCE_PROMPT, GRAMMAR_PROMPT
 
 OPENAI_MODEL: KnownModelName = "openai:gpt-4o-mini"
 ANTHROPIC_MODEL: KnownModelName = "anthropic:claude-3-5-sonnet-latest"
 
-claim_agent = Agent(
+assertion_agent = Agent(
     model=OPENAI_MODEL,
-    system_prompt=SUBJECT_PROMPT,
+    system_prompt=CONCLUSION_PROMPT,
     result_type=AssertionModel,
 )
 
 
 async def parse_assertion(insight: str) -> AssertionModel:
-    result = claim_agent.run_sync(insight)
+    result = assertion_agent.run_sync(insight)
     return result.data
 
 

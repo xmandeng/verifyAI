@@ -6,12 +6,12 @@
     "total_tokens": 496,
 }
 
-❯ python -c "from pastel.prompts import SUBJECT_PROMPT as text; print(text)" | wc
+❯ python -c "from pastel.prompts import CONCLUSION_PROMPT as text; print(text)" | wc
       31     261    1793
 
 """
 
-SUBJECT_PROMPT = """
+CONCLUSION_PROMPT = """
 Examine the following passage and identify the main conclusion. The main conclusionis the primary takeaway or final judgment being made about the data or situation.
 
 For example, in "The book is long-tailed and performance is driven by severe losses, giving high variance to forecasts. The recent underwriting years may be more profitable, driven by a reduction in severity. No major patterns are apparent." The main conclusion is "No major patterns are apparent."
