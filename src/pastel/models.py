@@ -8,7 +8,12 @@ from PIL import Image
 from pydantic import BaseModel, ConfigDict, Field, SkipValidation, field_validator
 
 
-class AssertionModel(BaseModel):
+class InputModel(BaseModel):
+    name: str = Field(description="Program name")
+    insight: str = Field(description="Insight text")
+
+
+class AssertionModel(InputModel):
     conclusion: str = Field(
         description="The main driving point or central assertion within an insight that represents the primary takeaway or judgment being made"
     )
