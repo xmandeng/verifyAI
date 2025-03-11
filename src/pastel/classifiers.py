@@ -61,10 +61,16 @@ async def classify_images(images: InsightPlots) -> dict[ImageType, BaseImage]:
     Returns:
         Dictionary mapping image types to their corresponding BaseImage objects
     """
-    image_dict = {}
+    image_dict: dict[ImageType, BaseImage] = {}
 
     for img in images:
         category = await classify_insurance_image(img)
+
+        # Handle multiple images of same type
+        if category in image_dict:
+            number = len([img for img in image_dict if img.startswith(category)])
+            category = cast(ImageType, f"{category}_{number}")
+
         image_dict[category] = img
 
     return image_dict

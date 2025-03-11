@@ -12,6 +12,7 @@ from pydantic_ai import BinaryContent
 class InputModel(BaseModel):
     name: str = Field(description="Program name")
     insight: str = Field(description="Insight text")
+    line_of_business: str = Field(description="Line of business for this program")
 
 
 class AssertionModel(InputModel):
@@ -144,3 +145,6 @@ class InsightPlots(BaseModel):
 
     def __iter__(self):
         return iter(self.plots.values())
+
+    def count(self) -> int:
+        return len(self.plots)
