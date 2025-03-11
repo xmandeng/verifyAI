@@ -2,14 +2,14 @@ from typing import Literal, cast
 
 from pydantic_ai import Agent
 
-from pastel.config import OPENAI_MODEL
+# from pastel.config import OPENAI_MODEL
 from pastel.models import BaseImage, InsightPlots
 from pastel.prompts import IMAGE_PROMPT
 
 ImageType = Literal["pricing", "severity", "frequency", "cuts"]
 
 classifier = Agent(
-    model=OPENAI_MODEL,
+    model="gpt-4o",
     system_prompt=IMAGE_PROMPT,
 )
 
@@ -18,9 +18,9 @@ async def classify_insurance_image(image_obj: BaseImage) -> ImageType:
     """
     Classify an insurance visualization image into one of the four expected types:
     - pricing: Time series of pricing changes
-    - severity: Claim severity metrics
-    - frequency: Claim frequency metrics
-    - cuts: Business segment analysis
+    - severity: Time series of Claim severity metrics
+    - frequency: Time series of Claim frequency metrics
+    - cuts: Bubble plot showing Business segment analysis
 
     Args:
         image_obj: BaseImage object containing the image to classify
