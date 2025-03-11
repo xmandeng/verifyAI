@@ -9,9 +9,9 @@ GLOSSARY = """
 | **UW** | Underwriting | The process of evaluating risk to determine whether to issue insurance and at what terms. "UW_name" in the data likely refers to an underwriter or underwriting team. |
 | **LOB** | Line of Business | A specific type of insurance product or coverage area (e.g., commercial auto liability, property, workers' compensation). Different LOBs have different risk profiles and performance characteristics. |
 | **Live Loss Ratio** | Current ratio of losses to premiums | Measures the real-time performance of policies before claims fully mature. In the visualization, this metric is broken down by quarters and underwriting years, with higher values indicating worse performance. |
-| **ClaimModel Frequency** | Number of claims filed per policy | Tracks how often claims are filed, measured over the lifetime of policies (in days). Higher values indicate more frequent claims. |
+| **Claim Frequency** | Number of claims filed per policy | Tracks how often claims are filed, measured over the lifetime of policies (in days). Higher values indicate more frequent claims. |
 | **Written Premium** | Premium charged per risk unit | The amount charged to policyholders for insurance coverage, typically measured per risk unit and days covered. |
-| **ClaimModel Severity** | Financial impact of claims | Measures how costly claims are. The "Large Claims/Total Claims" ratio indicates what portion of claims exceed certain thresholds. |
+| **Claim Severity** | Financial impact of claims | Measures how costly claims are. The "Large Claims/Total Claims" ratio indicates what portion of claims exceed certain thresholds. |
 | **Underwriting Year/Cohort** | Policies written during a specific year | Denoted as 2018, 2019, 2020A, 2020B, etc. The letter suffix likely indicates different quarters or policy periods within a year. |
 | **Program** | A specific book of business | A collection of insurance policies with similar characteristics, typically representing a specific product offering to a defined market segment. |
 | **Days** | Maturity or development of policies | Represents the time elapsed since policy inception, showing how claims and performance metrics develop over time (up to 1000 days in some visualizations). |
