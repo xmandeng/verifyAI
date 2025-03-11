@@ -2,14 +2,14 @@ from pydantic_ai import Agent, RunContext
 from pydantic_ai.models import KnownModelName
 
 from pastel.models import ClaimModel, GrammarValidation, InsightModel
-from pastel.prompts import ASSERTION_PROMPT, EVIDENCE_PROMPT, GRAMMAR_PROMPT
+from pastel.prompts import EVIDENCE_PROMPT, GRAMMAR_PROMPT, SUBJECT_PROMPT
 
 OPENAI_MODEL: KnownModelName = "openai:gpt-4o-mini"
 ANTHROPIC_MODEL: KnownModelName = "anthropic:claude-3-5-sonnet-latest"
 
 claim_agent = Agent(
     model=OPENAI_MODEL,
-    system_prompt=ASSERTION_PROMPT,
+    system_prompt=SUBJECT_PROMPT,
     result_type=ClaimModel,
 )
 
