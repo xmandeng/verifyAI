@@ -1,29 +1,4 @@
-GLOSSARY = """
-# Glossary - Insurance Industry Terms and Acronyms
-
-| Term/Acronym | Definition | Description |
-|--------------|------------|-------------|
-| **EULR** | Estimated Ultimate Loss Ratio | A key performance metric in insurance. Values > 0.7 indicate poor program performance. Estimates what the final loss ratio will be after all claims are settled. |
-| **LR** | Loss Ratio | The ratio of incurred losses and loss adjustment expenses to earned premiums. A fundamental metric of insurance profitability - lower is generally better for insurers. |
-| **ULR** | Ultimate Loss Ratio | The projected final loss ratio for a given cohort or time period after all claims are fully developed. Similar to EULR but may include different calculation methodologies. |
-| **UW** | Underwriting | The process of evaluating risk to determine whether to issue insurance and at what terms. "UW_name" in the data likely refers to an underwriter or underwriting team. |
-| **LOB** | Line of Business | A specific type of insurance product or coverage area (e.g., commercial auto liability, property, workers' compensation). Different LOBs have different risk profiles and performance characteristics. |
-| **Live Loss Ratio** | Current ratio of losses to premiums | Measures the real-time performance of policies before claims fully mature. In the visualization, this metric is broken down by quarters and underwriting years, with higher values indicating worse performance. |
-| **ClaimModel Frequency** | Number of claims filed per policy | Tracks how often claims are filed, measured over the lifetime of policies (in days). Higher values indicate more frequent claims. |
-| **Written Premium** | Premium charged per risk unit | The amount charged to policyholders for insurance coverage, typically measured per risk unit and days covered. |
-| **ClaimModel Severity** | Financial impact of claims | Measures how costly claims are. The "Large Claims/Total Claims" ratio indicates what portion of claims exceed certain thresholds. |
-| **Underwriting Year/Cohort** | Policies written during a specific year | Denoted as 2018, 2019, 2020A, 2020B, etc. The letter suffix likely indicates different quarters or policy periods within a year. |
-| **Program** | A specific book of business | A collection of insurance policies with similar characteristics, typically representing a specific product offering to a defined market segment. |
-| **Days** | Maturity or development of policies | Represents the time elapsed since policy inception, showing how claims and performance metrics develop over time (up to 1000 days in some visualizations). |
-| **IBNR** | Incurred But Not Reported | Claims that have occurred but haven't yet been reported to the insurer. Important for calculating ultimate loss projections. |
-| **Cut** | Segment of business | A specific subset or segment of the insurance portfolio, used for more granular analysis (e.g., "the long distance segment" mentioned in example insight). |
-| **Q1-Q4** | Quarters 1-4 | Calendar quarters used to organize and analyze insurance performance data. |
-| **Year-Letter Designation<br>(e.g., 2022A, 2022B)** | Underwriting cohort within a year | Rather than just annual cohorts, these likely represent specific policy issuance periods within a year - possibly quarters, trimesters, or even custom underwriting cycles. For example, 2022A might be Q1 of 2022, 2022B might be Q2, and 2022C might be Q3. The lack of consistency in how many letter designations appear per year (some years have A, B, C while others just have A, B or no letters) suggests these might correspond to specific underwriting initiatives, product revisions, or pricing changes rather than strictly calendar periods. This more granular segmentation allows insurers to track how specific cohorts perform over time, especially when changes to underwriting criteria or pricing were implemented mid-year. |
-| **Severity Ratio** | Ratio of large claims to total claims | This metric measures what proportion of total claims exceed a certain threshold (likely the $50K and $100K thresholds mentioned in the chart). It helps insurers understand if their losses are driven by a few large claims or many smaller ones. A rising severity ratio indicates that large claims are becoming more common relative to the total claim count, which could signal increasing risk exposure or changing claim patterns. The chart tracks this ratio's development over time (days) for different underwriting cohorts, showing how the proportion of large claims evolves as policies mature. |
-| **NSA Program** | Non-Standard Auto Program | Most likely refers to an auto insurance program for high-risk drivers who don't qualify for standard auto insurance coverage. NSA typically covers drivers with poor driving records, multiple accidents or violations, DUIs, or other factors that make them higher risk. Alteratively, a program that covers vehicles not typically covered by standard auto insurance policies, such as modified vehicles, classic cars, or high-performance sports cars. |
-"""
-
-
+# as of 2025-03-11
 AGENTIC_MODEL_LIST = [
     "anthropic:claude-3-7-sonnet-latest",
     "anthropic:claude-3-5-haiku-latest",

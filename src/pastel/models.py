@@ -8,9 +8,9 @@ from PIL import Image
 from pydantic import BaseModel, ConfigDict, Field, SkipValidation, field_validator
 
 
-class ClaimModel(BaseModel):
+class AssertionModel(BaseModel):
     conclusion: str = Field(
-        description="The specific claim or statement to be evaluated for validity"
+        description="The main driving point or central assertion within an insight that represents the primary takeaway or judgment being made"
     )
 
 
@@ -20,7 +20,7 @@ class Evidence(BaseModel):
     )
 
 
-class InsightModel(ClaimModel, Evidence):
+class InsightModel(AssertionModel, Evidence):
     model_config = ConfigDict(
         frozen=True,
         extra="forbid",
@@ -78,7 +78,7 @@ class BaseImage(BaseModel):
         return base64.b64encode(buffer.read()).decode("utf-8")
 
 
-class ClaimValidation(BaseModel):
+class PremiseValidation(BaseModel):
     claim: str = Field(description="The specific claim being validated")
     status: Literal["True", "Partially True", "False", "NotFound"] = Field(
         description="Validation status of the claim"
@@ -94,7 +94,7 @@ class InsightValidation(BaseModel):
     insight: str = Field(description="Original insight text")
     program_name: str = Field(description="Name of the insurance program")
     line_of_business: str = Field(description="Line of business for this program")
-    claim_validations: list[ClaimValidation] = Field(
+    premises: list[PremiseValidation] = Field(
         description="Validation results for individual claims"
     )
     overall_valid: bool = Field(description="Whether the entire insight is considered valid")
