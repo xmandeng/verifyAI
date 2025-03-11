@@ -2,12 +2,13 @@ from typing import Literal, cast
 
 from pydantic_ai import Agent
 
+from pastel.config import OPENAI_MODEL
 from pastel.models import BaseImage, InsightPlots
 
 ImageType = Literal["pricing", "severity", "frequency", "cuts"]
 
 classifier = Agent(
-    "openai:gpt-4o",
+    model=OPENAI_MODEL,
     system_prompt="""
         Classify this insurance visualization image into exactly one of these four categories:
 
@@ -46,7 +47,7 @@ async def classify_insurance_image(image_obj: BaseImage) -> ImageType:
     classification = result.data.strip().lower()
     if classification not in ["pricing", "severity", "frequency", "cuts"]:
         # Default to the most likely category if we get an unexpected response
-        # TODO Make this a match case statement
+        # TODO Make this a match/case statement
         if "price" in classification or "premium" in classification:
             return "pricing"
         elif "sever" in classification:
