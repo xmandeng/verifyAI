@@ -2,7 +2,7 @@ from typing import Literal, cast
 
 from pydantic_ai import Agent
 
-from pastel.models import BaseImage
+from pastel.models import BaseImage, InsightPlots
 
 ImageType = Literal["pricing", "severity", "frequency", "cuts"]
 
@@ -59,7 +59,7 @@ async def classify_insurance_image(image_obj: BaseImage) -> ImageType:
     return cast(ImageType, classification)
 
 
-async def classify_images(images: list[BaseImage]) -> dict[ImageType, BaseImage]:
+async def classify_images(images: InsightPlots) -> dict[ImageType, BaseImage]:
     """
     Classify a collection of insurance images into the four expected types.
 

@@ -141,3 +141,6 @@ class InsightPlots(BaseModel):
         str_strip_whitespace=True,
         arbitrary_types_allowed=True,
     )
+
+    def __iter__(self):
+        return iter(self.plots.values())
