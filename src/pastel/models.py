@@ -6,6 +6,7 @@ from typing import Annotated, Literal, Optional
 
 from PIL import Image
 from pydantic import BaseModel, ConfigDict, Field, SkipValidation, field_validator
+from pydantic_ai import BinaryContent
 
 
 class InputModel(BaseModel):
@@ -109,15 +110,34 @@ class BaseImage(BaseModel):
 
         return base64.b64encode(buffer.read()).decode("utf-8")
 
+    @property
+    def binary_content(self) -> BinaryContent:
+        """
+        Converts the image to a BinaryContent object for use with LLM APIs.
+
+        Args:
+            description: Optional description of the image content
+
+        Returns:
+            BinaryContent object ready for use with PydanticAI
+        """
+        buffer = io.BytesIO()
+        self.image.save(buffer, format="JPEG")
+        buffer.seek(0)
+
+        return BinaryContent(
+            data=buffer.getvalue(),
+            media_type="image/jpeg",
+        )
+
 
 class InsightPlots(BaseModel):
     plots: dict[str, BaseImage] = Field(
-        ..., description="Dictionary of plot names and corresponding image objects"
+        ..., description="Dictionary of plot names and corresponding base64-encoded images"
     )
     model_config = ConfigDict(
         frozen=True,
         validate_assignment=True,
-        extra="forbid",
         str_strip_whitespace=True,
         arbitrary_types_allowed=True,
     )

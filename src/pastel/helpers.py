@@ -27,8 +27,8 @@ def encode_base64(image: PILImage) -> str:
     return base64.b64encode(buffer.read()).decode("utf-8")
 
 
-def load_images_from_directory(image_dir: str | Path) -> dict[str, str]:
+def load_images_from_directory(image_dir: str | Path) -> dict[str, BaseImage]:
     return {
-        image.name: BaseImage(image_path=image, image=load_image(image)).encoded
+        image.name: BaseImage(image_path=image, image=load_image(image))
         for image in pathlib.Path(image_dir).glob("*.png")
     }
