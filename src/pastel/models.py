@@ -53,6 +53,33 @@ class Assessment(InsightModel):
         return self.decision
 
 
+class PremiseValidation(BaseModel):
+    claim: str = Field(description="The specific claim being validated")
+    status: Literal["True", "Partially True", "False", "NotFound"] = Field(
+        description="Validation status of the claim"
+    )
+    confidence: Literal["High", "Medium", "Low"] = Field(
+        description="Confidence level in the validation assessment"
+    )
+    source: str = Field(description="Evidence source (image name, data file, etc.)")
+    reasoning: str = Field(description="Explanation of validation logic")
+
+
+class InsightValidation(BaseModel):
+    insight: str = Field(description="Original insight text")
+    program_name: str = Field(description="Name of the insurance program")
+    line_of_business: str = Field(description="Line of business for this program")
+    premises: list[PremiseValidation] = Field(
+        description="Validation results for individual claims"
+    )
+    overall_valid: bool = Field(description="Whether the entire insight is considered valid")
+    reasoning: str = Field(description="Summary explanation of validation results")
+
+
+class GrammarValidation(BaseModel):
+    errors: list[str] = Field(description="Grammar errors in the insight")
+
+
 class BaseImage(BaseModel):
     image_path: str | Path = Field(..., description="Path to the image file")
     image: Annotated[Image.Image, SkipValidation] = Field(..., description="The image object")
@@ -83,28 +110,14 @@ class BaseImage(BaseModel):
         return base64.b64encode(buffer.read()).decode("utf-8")
 
 
-class PremiseValidation(BaseModel):
-    claim: str = Field(description="The specific claim being validated")
-    status: Literal["True", "Partially True", "False", "NotFound"] = Field(
-        description="Validation status of the claim"
+class InsightPlots(BaseModel):
+    plots: dict[str, BaseImage] = Field(
+        ..., description="Dictionary of plot names and corresponding image objects"
     )
-    confidence: Literal["High", "Medium", "Low"] = Field(
-        description="Confidence level in the validation assessment"
+    model_config = ConfigDict(
+        frozen=True,
+        validate_assignment=True,
+        extra="forbid",
+        str_strip_whitespace=True,
+        arbitrary_types_allowed=True,
     )
-    source: str = Field(description="Evidence source (image name, data file, etc.)")
-    reasoning: str = Field(description="Explanation of validation logic")
-
-
-class InsightValidation(BaseModel):
-    insight: str = Field(description="Original insight text")
-    program_name: str = Field(description="Name of the insurance program")
-    line_of_business: str = Field(description="Line of business for this program")
-    premises: list[PremiseValidation] = Field(
-        description="Validation results for individual claims"
-    )
-    overall_valid: bool = Field(description="Whether the entire insight is considered valid")
-    reasoning: str = Field(description="Summary explanation of validation results")
-
-
-class GrammarValidation(BaseModel):
-    errors: list[str] = Field(description="Grammar errors in the insight")
