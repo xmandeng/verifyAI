@@ -1,6 +1,6 @@
 # Overall Assessment
 
----
+
 
 **The book is long-tailed and profitable. The first underwriting year has produced worse than predicted results but the following years appear to be performing better on both severity and frequency of claims. Performance is driven by some relatively severe losses and the projections have high variance. Pricing has strengthen every treaty year which is consistent with improved LR.**
 
@@ -8,13 +8,13 @@
 
 The insight is largely valid with four main claims, three of which are fully supported by the evidence and one that is partially supported. The claim about the book being long-tailed and profitable is partially true as there is strong evidence for the long-tailed nature but only partial evidence for overall profitability (with positive indicators for 2021-2023 but incomplete data for 2024). The claims about first year underperformance, performance being driven by severe losses, and pricing strengthening each treaty year (despite the grammatical error) are all fully supported by the data with medium to high confidence. While there is one grammatical error ("strengthen" should be "strengthened"), this does not impact the factual validity of the analysis.
 
----
+
 
 ## Conclusion
 
 **"The following years appear to be performing better on both severity and frequency of claims.**"
 
----
+
 
 ## Supporting Evidence
 
@@ -42,7 +42,7 @@ The insight is largely valid with four main claims, three of which are fully sup
 
 **Rationale** <br>The 'Written Premium per Risk and Days Covered' chart (pricing.png) shows a generally increasing trend across treaty years 1-4, indicating strengthening pricing. This aligns with the improving loss ratios shown in the LRS Data table, where the loss ratio improved from 0.44 in 2021 to 0.18 in 2022 and further to 0.07 in 2023. The vertical treaty year lines in the pricing chart correspond with visible increases in the premium trend, supporting the claim that pricing has strengthened with each treaty year, consistent with the improving loss ratios.
 
----
+
 
 ## Grammar
 

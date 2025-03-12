@@ -1,6 +1,6 @@
 # Overall Assessment
 
----
+
 
 **This is a NSA program with EULR < 0.7. The policies written in FL appear to have higher loss ratios than other states. Premium growth has slowed in H2 2024. Finally, there is a considerable increase in price in the most recent months.**
 
@@ -18,13 +18,13 @@ Additionally, while the insight mentions this is an "NSA program with EULR < 0.7
 
 Due to these inaccuracies, particularly the completely false claim about H2 2024 which represents future data not yet available, the overall insight cannot be considered valid.
 
----
+
 
 ## Conclusion
 
 **"The policies written in FL appear to have higher loss ratios than other states.**"
 
----
+
 
 ## Supporting Evidence
 
@@ -46,7 +46,7 @@ Due to these inaccuracies, particularly the completely false claim about H2 2024
 
 **Rationale** <br>In the top right chart (pricing.png) showing written premium per risk and days covered, there is a slight upward trend visible in the most recent time period shown. However, the increase appears to be modest rather than 'considerable'. The premium line shows a gradual upward trajectory toward the right side of the chart, but the magnitude of the increase appears relatively small compared to the overall range of the chart. While there is an increase, describing it as 'considerable' overstates the magnitude shown in the data.
 
----
+
 
 ## Grammar
 

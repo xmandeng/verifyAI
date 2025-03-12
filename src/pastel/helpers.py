@@ -177,16 +177,15 @@ def export_evaluation_to_markdown(
         str: Path to the generated Markdown file or error message
     """
     # Create markdown content
-    md_content = "# Overall Assessment\n\n---\n\n"
+    md_content = "# Overall Assessment\n\n"
     md_content += f"**{insight.insight}**\n\n"  # Added newline after insight text
     md_content += f"## {final_evaluation.overall_valid}\n\n"
-    md_content += f"{final_evaluation.reasoning}\n\n---\n\n"
+    md_content += f"{final_evaluation.reasoning}\n\n"
 
-    # md_content += "## Assertion\n\n---\n\n"
+    # md_content += "## Assertion\n\n"
     md_content += "## Conclusion\n\n"
     md_content += f'**"{insight.conclusion}**"\n\n'
 
-    md_content += "---\n\n"
     md_content += "## Supporting Evidence\n\n"
 
     if not premises:
@@ -197,7 +196,6 @@ def export_evaluation_to_markdown(
             md_content += f"**Status** <br>{premise.status} [{premise.confidence} confidence]\n\n"
             md_content += f"**Rationale** <br>{premise.reasoning}\n\n"
 
-    md_content += "---\n\n"
     md_content += "## Grammar\n\n"
 
     if grammar.errors:
