@@ -3,9 +3,7 @@ from pydantic_ai import Agent
 from pastel.models import BaseImage, InsightModel, InsightPlots, PremiseValidation
 
 classifier = Agent(
-    # model="anthropic:claude-3-7-sonnet-latest",
-    model="anthropic:claude-3-5-sonnet-latest",
-    # model="gpt-4-turbo",
+    model="anthropic:claude-3-7-sonnet-latest",
     deps_type=InsightModel,
     result_type=list[PremiseValidation],
     model_settings={"temperature": 1},

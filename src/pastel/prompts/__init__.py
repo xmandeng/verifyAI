@@ -1,3 +1,4 @@
+from pastel.prompts.consolidate import CONSOLIDATE_PROMPT
 from pastel.prompts.evaluation import CLAIMS_VALIDATION_PROMPT, EVALUATION_PROMPT
 from pastel.prompts.evidence import EVIDENCE_PROMPT
 from pastel.prompts.grammar import GRAMMAR_PROMPT
@@ -11,4 +12,5 @@ __all__ = [
     "EVALUATION_PROMPT",
     "CLAIMS_VALIDATION_PROMPT",
     "IMAGE_PROMPT",
+    "CONSOLIDATE_PROMPT",
 ]

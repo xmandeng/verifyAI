@@ -1,5 +1,6 @@
 import base64
 import io
+import os
 import pathlib
 from pathlib import Path
 
@@ -38,66 +39,181 @@ def load_images_from_directory(image_dir: str | Path) -> dict[str, BaseImage]:
 def create_consolidated_image(
     lrs_data: pd.DataFrame, images: InsightPlots, insight: InsightModel
 ) -> BaseImage:
+    """
+    Creates a consolidated image containing LRS data and all plots from the program folder.
 
+    Args:
+        lrs_data: DataFrame containing LRS data for the program
+        images: InsightPlots object containing images for visualization
+        insight: InsightModel containing program details
+
+    Returns:
+        BaseImage object with the consolidated visualization
+    """
     # Define the output path for the consolidated image
     output_path = Path(f"../data/{insight.name.replace('/', '-')}_consolidated_image.png")
 
-    # Create a blank image with white background
-    width, height = 1200, 2000  # Increase height to accommodate larger images
+    # Create a blank image with white background - use a wider format for better layout
+    width, height = 1800, 2000  # Increased width and height for better spacing
     consolidated_image = Image.new("RGB", (width, height), "white")
     draw = ImageDraw.Draw(consolidated_image)
 
-    # Load a font
-    font = ImageFont.load_default()
+    try:
+        # Try to use a nicer font if available
+        font_title = ImageFont.truetype("Arial", 16)
+        font = ImageFont.truetype("Arial", 12)
+    except IOError:
+        # Fallback to default font
+        font_title = ImageFont.load_default()  # type: ignore
+        font = ImageFont.load_default()  # type: ignore
 
-    # Draw LRS Data table with bounding box
-    x_offset, y_offset = 50, 50
-    table_width = 500
-    table_height = (len(lrs_data) + 2) * 20
-    draw.rectangle(
-        [x_offset - 10, y_offset - 10, x_offset + table_width, y_offset + table_height],  # type: ignore
-        outline="black",
+    # Draw title and insight text at the top
+    title_y = 20
+    draw.text(
+        (width // 2 - 200, title_y), f"Program: {insight.name}", font=font_title, fill="black"
     )
-    draw.text((x_offset, y_offset), "LRS Data", font=font, fill="black")
-    y_offset += 20
-    for col in lrs_data.columns:
-        draw.text((x_offset, y_offset), col, font=font, fill="black")
-        x_offset += 100
-    y_offset += 20
-    x_offset = 50
-    for index, row in lrs_data.iterrows():
-        for col in lrs_data.columns:
-            draw.text((x_offset, y_offset), str(row[col]), font=font, fill="black")
-            x_offset += 100
-        y_offset += 20
-        x_offset = 50
 
-    # Draw images with captions and bounding boxes in a single column
-    x_offset = 600
-    y_offset = 50
+    # Section for LRS Data
+    lrs_y = title_y + 60  # Increased margin from title
+    draw.text((50, lrs_y), "LRS Data", font=font_title, fill="black")
 
-    for plot in images.plots:
-        image_path = Path(f"../data/{insight.name.replace('/', '-')}/{plot}")
-        img = Image.open(image_path)
-        img = img.convert("RGBA")  # Convert image to RGBA to handle transparency
-        # Create a white background image
-        white_bg = Image.new("RGBA", img.size, "white")
-        # Composite the image onto the white background
-        img = Image.alpha_composite(white_bg, img).convert("RGB")
-        img.thumbnail((500, 500))  # Increase thumbnail size for better legibility
+    # Create table frame
+    table_width = 550  # Increased table width
+    row_height = 35  # Increased row height for better readability
+    table_height = (len(lrs_data) + 1) * row_height  # +1 for header
+
+    # Draw table with grid lines
+    col_widths = [200, 150, 150]  # Increased width for first column
+
+    # Draw table headers with background
+    header_y = lrs_y + 30
+    x_pos = 50
+    draw.rectangle((x_pos, header_y, x_pos + table_width, header_y + row_height), fill="lightgray")
+
+    # Draw header text
+    x_pos = 50
+    for i, col in enumerate(lrs_data.columns):
+        draw.text((x_pos + 5, header_y + 5), col, font=font, fill="black")
+        draw.line(
+            (x_pos + col_widths[i], header_y, x_pos + col_widths[i], header_y + table_height),
+            fill="black",
+        )
+        x_pos += col_widths[i]
+
+    # Draw horizontal line after header
+    draw.line((50, header_y + row_height, 50 + table_width, header_y + row_height), fill="black")
+
+    # Draw rows
+    row_y = header_y + row_height
+    for _, row in lrs_data.iterrows():
+        x_pos = 50
+        for i, col in enumerate(lrs_data.columns):
+            cell_text = str(row[col])
+            draw.text((x_pos + 5, row_y + 5), cell_text, font=font, fill="black")
+            x_pos += col_widths[i]
+
+        row_y += row_height
+        draw.line((50, row_y, 50 + table_width, row_y), fill="black")
+
+    # Organize images in a 2x3 grid layout
+    plots_per_row = 2
+    max_img_width = (width - 150) // plots_per_row  # Added more margin between columns
+    max_img_height = 400  # Increased maximum height for each image
+
+    # Calculate starting position for images grid
+    grid_start_y = lrs_y + table_height + 100  # Increased spacing after table
+
+    # Process and place each image
+    plot_items = list(images.plots.items())
+    for idx, (plot_name, img_obj) in enumerate(plot_items):
+        # Calculate grid position
+        row = idx // plots_per_row  # type: ignore
+        col = idx % plots_per_row  # type: ignore
+
+        # Calculate image position
+        x_pos = 50 + col * (max_img_width + 75)  # type: ignore
+        y_pos = grid_start_y + row * (
+            max_img_height + 100
+        )  # Increased vertical spacing between image rows
+
+        # Get image and resize while maintaining aspect ratio
+        img = img_obj.image.copy()
+        img.thumbnail((max_img_width, max_img_height))
+
+        # Get actual size after resizing
         img_width, img_height = img.size
 
+        # Draw border and title for the image
         draw.rectangle(
-            [x_offset - 10, y_offset - 10, x_offset + img_width + 10, y_offset + img_height + 40],  # type: ignore
+            (x_pos - 10, y_pos - 30, x_pos + img_width + 10, y_pos + img_height + 10),  # type: ignore
             outline="black",
         )
-        draw.text((x_offset, y_offset), plot, font=font, fill="black")
-        y_offset += 20
-        consolidated_image.paste(img, (x_offset, y_offset))
-        y_offset += img_height + 40  # Adjust spacing for larger images
+        draw.text((x_pos, y_pos - 25), plot_name, font=font, fill="black")  # type: ignore
+
+        # Paste the image
+        consolidated_image.paste(img, (x_pos, y_pos))  # type: ignore
 
     # Save the consolidated image
     consolidated_image.save(output_path)
 
     # Return a BaseImage object
     return BaseImage(image_path=output_path, image=consolidated_image)
+
+
+def export_evaluation_to_markdown(
+    insight, final_evaluation, premises, grammar, output_dir="../reports"
+):
+    """
+    Export the evaluation results to a Markdown file.
+
+    Args:
+        insight: The insight object containing name, insight text, and conclusion
+        final_evaluation: The final evaluation object with overall_valid and reasoning
+        premises: List of premise objects with claim, status, confidence, and reasoning
+        grammar: Grammar object with errors list
+        output_dir: Directory to save the Markdown file (default: "../reports")
+
+    Returns:
+        str: Path to the generated Markdown file or error message
+    """
+    # Create markdown content
+    md_content = "# Overall Assessment\n\n"
+    md_content += f"**{insight.insight}**\n\n"  # Added newline after insight text
+    md_content += f"## {final_evaluation.overall_valid}\n\n"
+    md_content += f"{final_evaluation.reasoning}\n\n"
+
+    # md_content += "## Assertion\n\n"
+    md_content += "## Conclusion\n\n"
+    md_content += f'**"{insight.conclusion}**"\n\n'
+
+    md_content += "## Supporting Evidence\n\n"
+
+    if not premises:
+        md_content += "#### No premises found\n\n"
+    else:
+        for i, premise in enumerate(premises):
+            md_content += f"**{i+1}. {premise.claim}**\n\n"
+            md_content += f"**Status** <br>{premise.status} [{premise.confidence} confidence]\n\n"
+            md_content += f"**Rationale** <br>{premise.reasoning}\n\n"
+
+    md_content += "## Grammar\n\n"
+
+    if grammar.errors:
+        for error in grammar.errors:
+            md_content += f"- {error}\n"
+    else:
+        md_content += "**No errors found**\n"
+
+    # Define the output Markdown filename with timestamp
+    os.makedirs(output_dir, exist_ok=True)
+    md_file = f"{output_dir}/evaluation_{insight.name.replace('/', '-')}.md"
+
+    # Save Markdown to file
+    try:
+        with open(md_file, "w", encoding="utf-8") as f:
+            f.write(md_content)
+        result = f"Markdown report saved to: {md_file}"
+    except Exception as e:
+        result = f"Error generating Markdown: {str(e)}"
+
+    return result
