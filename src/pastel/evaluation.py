@@ -13,7 +13,7 @@ consolidator = Agent(
 )
 
 
-def consolidate_evaluations(
+async def consolidate_evaluations(
     insight: InsightModel, premises: list[PremiseValidation], grammar: GrammarValidation
 ) -> InsightValidation:
 
@@ -46,12 +46,4 @@ Grammar:
 
     result = consolidator.run_sync(prompt)
 
-    return InsightValidation(
-        insight=insight.insight,
-        program_name=insight.name,
-        line_of_business=insight.line_of_business,
-        premises=premises,
-        errors=grammar.errors,
-        overall_valid=result.data.overall_valid,
-        reasoning=result.data.reasoning,
-    )
+    return result.data

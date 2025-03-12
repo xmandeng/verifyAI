@@ -34,6 +34,8 @@ dependencies = [
     "nest-asyncio (>=1.6.0,<2.0.0)",
     "logfire (>=3.7.1,<4.0.0)",
     "fpdf (>=1.7.2,<2.0.0)",
+    "pdfkit (>=1.0.0,<2.0.0)",
+    "wkhtmltopdf (>=0.2,<0.3)",
 ]
 
 

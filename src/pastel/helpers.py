@@ -1,5 +1,6 @@
 import base64
 import io
+import os
 import pathlib
 from pathlib import Path
 
@@ -157,3 +158,64 @@ def create_consolidated_image(
 
     # Return a BaseImage object
     return BaseImage(image_path=output_path, image=consolidated_image)
+
+
+def export_evaluation_to_markdown(
+    insight, final_evaluation, premises, grammar, output_dir="../reports"
+):
+    """
+    Export the evaluation results to a Markdown file.
+
+    Args:
+        insight: The insight object containing name, insight text, and conclusion
+        final_evaluation: The final evaluation object with overall_valid and reasoning
+        premises: List of premise objects with claim, status, confidence, and reasoning
+        grammar: Grammar object with errors list
+        output_dir: Directory to save the Markdown file (default: "../reports")
+
+    Returns:
+        str: Path to the generated Markdown file or error message
+    """
+    # Create markdown content
+    md_content = "# Overall Assessment\n\n---\n\n"
+    md_content += f"**{insight.insight}**\n\n"  # Added newline after insight text
+    md_content += f"## {final_evaluation.overall_valid}\n\n"
+    md_content += f"{final_evaluation.reasoning}\n\n---\n\n"
+
+    # md_content += "## Assertion\n\n---\n\n"
+    md_content += "## Conclusion\n\n"
+    md_content += f'**"{insight.conclusion}**"\n\n'
+
+    md_content += "---\n\n"
+    md_content += "## Supporting Evidence\n\n"
+
+    if not premises:
+        md_content += "#### No premises found\n\n"
+    else:
+        for i, premise in enumerate(premises):
+            md_content += f"**{i+1}. {premise.claim}**\n\n"
+            md_content += f"**Status** <br>{premise.status} [{premise.confidence} confidence]\n\n"
+            md_content += f"**Rationale** <br>{premise.reasoning}\n\n"
+
+    md_content += "---\n\n"
+    md_content += "## Grammar\n\n"
+
+    if grammar.errors:
+        for error in grammar.errors:
+            md_content += f"- {error}\n"
+    else:
+        md_content += "**No errors found**\n"
+
+    # Define the output Markdown filename with timestamp
+    os.makedirs(output_dir, exist_ok=True)
+    md_file = f"{output_dir}/evaluation_{insight.name.replace('/', '-')}.md"
+
+    # Save Markdown to file
+    try:
+        with open(md_file, "w", encoding="utf-8") as f:
+            f.write(md_content)
+        result = f"Markdown report saved to: {md_file}"
+    except Exception as e:
+        result = f"Error generating Markdown: {str(e)}"
+
+    return result

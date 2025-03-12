@@ -70,13 +70,6 @@ class PremiseValidation(BaseModel):
 
 
 class InsightValidation(BaseModel):
-    insight: str = Field(description="Original insight text")
-    program_name: str = Field(description="Name of the insurance program")
-    line_of_business: str = Field(description="Line of business for this program")
-    premises: list[PremiseValidation] = Field(
-        description="Validation results for individual claims"
-    )
-    errors: list[str] = Field(description="Grammar errors in the insight")
     overall_valid: bool = Field(description="Whether the entire insight is considered valid")
     reasoning: str = Field(description="Summary explanation of validation results")
 
