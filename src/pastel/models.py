@@ -6,11 +6,15 @@ from typing import Annotated, Literal, Optional
 
 from PIL import Image
 from pydantic import BaseModel, ConfigDict, Field, SkipValidation, field_validator
+from pydantic_ai import BinaryContent
+
+ImageType = Literal["pricing", "severity", "frequency", "cuts"]
 
 
 class InputModel(BaseModel):
     name: str = Field(description="Program name")
     insight: str = Field(description="Insight text")
+    line_of_business: str = Field(description="Line of business for this program")
 
 
 class AssertionModel(InputModel):
@@ -53,36 +57,6 @@ class Assessment(InsightModel):
         return self.decision
 
 
-class BaseImage(BaseModel):
-    image_path: str | Path = Field(..., description="Path to the image file")
-    image: Annotated[Image.Image, SkipValidation] = Field(..., description="The image object")
-    model_config = ConfigDict(
-        frozen=True,
-        validate_assignment=True,
-        extra="forbid",
-        str_strip_whitespace=True,
-        arbitrary_types_allowed=True,
-    )
-
-    @field_validator("image_path", mode="before")
-    @classmethod
-    def validate_image_path(cls, path):
-        if not os.path.exists(path):
-            raise ValueError(f"File not found: {path}")
-        return path
-
-    @property
-    def encoded(self) -> str:
-        """
-        Converts a PIL Image to a base64-encoded string for API usage.
-        """
-        buffer = io.BytesIO()
-        self.image.save(buffer, format="JPEG")  # OpenAI supports PNG or JPEG
-        buffer.seek(0)
-
-        return base64.b64encode(buffer.read()).decode("utf-8")
-
-
 class PremiseValidation(BaseModel):
     claim: str = Field(description="The specific claim being validated")
     status: Literal["True", "Partially True", "False", "NotFound"] = Field(
@@ -91,7 +65,6 @@ class PremiseValidation(BaseModel):
     confidence: Literal["High", "Medium", "Low"] = Field(
         description="Confidence level in the validation assessment"
     )
-    source: str = Field(description="Evidence source (image name, data file, etc.)")
     reasoning: str = Field(description="Explanation of validation logic")
 
 
@@ -108,3 +81,85 @@ class InsightValidation(BaseModel):
 
 class GrammarValidation(BaseModel):
     errors: list[str] = Field(description="Grammar errors in the insight")
+
+
+class BaseImage(BaseModel):
+    image_path: Path = Field(..., description="Path to the image file")
+    image: Annotated[Image.Image, SkipValidation] = Field(..., description="The image object")
+    model_config = ConfigDict(
+        frozen=True,
+        validate_assignment=True,
+        extra="forbid",
+        str_strip_whitespace=True,
+        arbitrary_types_allowed=True,
+    )
+
+    @field_validator("image_path", mode="before")
+    @classmethod
+    def validate_image_path(cls, path):
+        if not os.path.exists(path):
+            raise ValueError(f"File not found: {path}")
+        return path
+
+    @field_validator("image_path", mode="after")
+    @classmethod
+    def convert_str_to_path(cls, path):
+        if isinstance(path, str):
+            return Path(path)
+        return path
+
+    @property
+    def encoded(self) -> str:
+        """
+        Converts a PIL Image to a base64-encoded string for API usage.
+        """
+        buffer = io.BytesIO()
+        self.image.save(buffer, format="JPEG")  # OpenAI supports PNG or JPEG
+        buffer.seek(0)
+
+        return base64.b64encode(buffer.read()).decode("utf-8")
+
+    @property
+    def binary_content(self) -> BinaryContent:
+        """
+        Converts the image to a BinaryContent object for use with LLM APIs.
+
+        Args:
+            description: Optional description of the image content
+
+        Returns:
+            BinaryContent object ready for use with PydanticAI
+        """
+        buffer = io.BytesIO()
+        self.image.save(buffer, format="JPEG")
+        buffer.seek(0)
+
+        return BinaryContent(
+            data=buffer.getvalue(),
+            media_type="image/jpeg",
+        )
+
+
+class InsightPlots(BaseModel):
+    plots: dict[str, BaseImage] = Field(
+        ..., description="Dictionary of plot names and corresponding base64-encoded images"
+    )
+    model_config = ConfigDict(
+        frozen=True,
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        arbitrary_types_allowed=True,
+    )
+
+    def __iter__(self):
+        return iter(self.plots.values())
+
+    def count(self) -> int:
+        return len(self.plots)
+
+
+class BaseDocument(BaseModel):
+    """Represents a PDF document as a binary content object."""
+
+    binary_content: BinaryContent
+    filename: str
