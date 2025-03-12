@@ -1,76 +1,102 @@
-from typing import Literal, cast
-
 from pydantic_ai import Agent
 
-# from pastel.config import OPENAI_MODEL
-from pastel.models import BaseImage, InsightPlots
-from pastel.prompts import IMAGE_PROMPT
-
-ImageType = Literal["pricing", "severity", "frequency", "cuts"]
+from pastel.models import BaseImage, InsightModel, InsightPlots, PremiseValidation
 
 classifier = Agent(
-    model="gpt-4o",
-    system_prompt=IMAGE_PROMPT,
+    # model="anthropic:claude-3-7-sonnet-latest",
+    model="anthropic:claude-3-5-sonnet-latest",
+    # model="gpt-4-turbo",
+    deps_type=InsightModel,
+    result_type=list[PremiseValidation],
+    model_settings={"temperature": 1},
+    system_prompt="""
+You are an insurance industry analyst tasked with evaluating the accuracy of insurance insights against data. Your role is to compare statements with the provided image and determine whether the statement is reasonably supported.
+
+Ensure that the statements include the same metrics as the image. Do not confuse dissimilar metrics like price with rates, premiums with losses, etc.
+
+These are very high level & generalized statements. Your consideration should assess the aggregate or overall trend of the reported data, not precise values.
+
+When evaluating statements about "similar performance" or "similar trends," consider:
+- Perfect alignment is not required for similarity
+- Look for broadly comparable patterns, directions, or ranges
+- Minor variations or outliers don't necessarily negate overall similarity
+- Consider relative values and general trajectories rather than exact matches
+
+For statements about the severity or frequency of claims specifically:
+- Similar performance can mean comparable ranges or overall trajectories
+- Lines that follow broadly similar patterns (even with some divergence) can still represent "similar performance"
+- The overall story of the data may support similarity claims even with some variation
+
+Provide a balanced assessment that avoids being overly rigid or pedantic. Insurance professionals often speak in generalizations when describing data trends, and your evaluation should reflect this practical perspective.
+
+When evaluating statements, classify them as:
+- True: The image reasonably supports the statement
+- Partially True: The image shows some support but with notable caveats
+- False: The image contradicts the core assertion of the statement
+- NotFound: The image doesn't contain relevant information
+
+Return a JSON object with assessment details as previously specified.
+""",
 )
 
 
-async def classify_insurance_image(image_obj: BaseImage) -> ImageType:
-    """
-    Classify an insurance visualization image into one of the four expected types:
-    - pricing: Time series of pricing changes
-    - severity: Time series of Claim severity metrics
-    - frequency: Time series of Claim frequency metrics
-    - cuts: Scatter plot showing Business segment analysis
+async def classify_insurance_text(data: str, statements: list[str]) -> list[PremiseValidation]:
 
-    Args:
-        image_obj: BaseImage object containing the image to classify
+    text_statements = ""
+    for i, statement in enumerate(statements):
+        text_statements += f"{i+1}. {statement}\n"
 
-    Returns:
-        Classification as one of the four expected image types
-    """
-
-    # Use the image object directly with no encoding logic in this function
     result = classifier.run_sync(
-        ["Classify this insurance visualization image:", image_obj.binary_content]
+        [
+            """Evaluate this insurance table (source: lrs.xslx) against the following {count} statements:
+
+From lrs.xslx:
+{data}
+
+Statements:
+{statements}
+
+Taking the data in aggregate, does it match any statement provided""".format(
+                count=len(statements), statements=text_statements, data=data
+            ),
+        ],
     )
 
-    # Process the classification result
-    classification = result.data.strip().lower()
-    if classification not in ["pricing", "severity", "frequency", "cuts"]:
-        # Default to the most likely category if we get an unexpected response
-        # TODO Make this a match/case statement
-        if "price" in classification or "premium" in classification:
-            return "pricing"
-        elif "sever" in classification:
-            return "severity"
-        elif "freq" in classification:
-            return "frequency"
-        else:
-            return "cuts"
-
-    return cast(ImageType, classification)
+    return [premise for premise in result.data if premise.status != "NotFound"]
 
 
-async def classify_images(images: InsightPlots) -> dict[ImageType, BaseImage]:
-    """
-    Classify a collection of insurance images into the four expected types.
+async def classify_insurance_image(
+    image_obj: BaseImage, statements: list[str]
+) -> list[PremiseValidation]:
 
-    Args:
-        images: List of BaseImage objects to classify
+    text_statements = ""
+    for i, statement in enumerate(statements):
+        text_statements += f"{i+1}. {statement}\n"
 
-    Returns:
-        Dictionary mapping image types to their corresponding BaseImage objects
-    """
-    image_dict: dict[ImageType, BaseImage] = {}
+    result = classifier.run_sync(
+        [
+            """Evaluate this insurance {source} against the following {count} statements:
 
-    for img in images:
-        category = await classify_insurance_image(img)
+{statements}
+""".format(
+                source="image",
+                count=len(statements),
+                statements=text_statements,
+            ),
+            image_obj.binary_content,
+        ],
+    )
 
-        # Handle multiple images of same type
-        if category in image_dict:
-            number = len([img for img in image_dict if img.startswith(category)])
-            category = cast(ImageType, f"{category}_{number}")
+    return [premise for premise in result.data if premise.status != "NotFound"]
 
-        image_dict[category] = img
 
-    return image_dict
+async def classify_images(images: InsightPlots, statements: list[str]) -> list[PremiseValidation]:
+
+    premises: list[PremiseValidation] = []
+    for image_obj in images:
+        if not statements:
+            break
+
+        premises.extend(await classify_insurance_image(image_obj, statements))
+
+    return premises
