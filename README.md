@@ -90,4 +90,4 @@ To configure VS Code to use this environment:
 
 ## License
 
-[Add license information here]
+No Public License / Internal Use
