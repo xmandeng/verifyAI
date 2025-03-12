@@ -1,0 +1,4 @@
+OPENAI_API_KEY="<your key here>"
+ANTHROPIC_API_KEY="<your key here>"
+
+PYDANTIC_LOGFIRE_TOKEN="pylf_v1_us_q4bCxb8hCCSSr7mmMJZmWWNJbZ2Zjm4S7fPm7lRz7cqt"
