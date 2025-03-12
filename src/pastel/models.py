@@ -8,6 +8,8 @@ from PIL import Image
 from pydantic import BaseModel, ConfigDict, Field, SkipValidation, field_validator
 from pydantic_ai import BinaryContent
 
+ImageType = Literal["pricing", "severity", "frequency", "cuts"]
+
 
 class InputModel(BaseModel):
     name: str = Field(description="Program name")
@@ -63,7 +65,6 @@ class PremiseValidation(BaseModel):
     confidence: Literal["High", "Medium", "Low"] = Field(
         description="Confidence level in the validation assessment"
     )
-    source: str = Field(description="Evidence source (image name, data file, etc.)")
     reasoning: str = Field(description="Explanation of validation logic")
 
 
@@ -83,7 +84,7 @@ class GrammarValidation(BaseModel):
 
 
 class BaseImage(BaseModel):
-    image_path: str | Path = Field(..., description="Path to the image file")
+    image_path: Path = Field(..., description="Path to the image file")
     image: Annotated[Image.Image, SkipValidation] = Field(..., description="The image object")
     model_config = ConfigDict(
         frozen=True,
@@ -98,6 +99,13 @@ class BaseImage(BaseModel):
     def validate_image_path(cls, path):
         if not os.path.exists(path):
             raise ValueError(f"File not found: {path}")
+        return path
+
+    @field_validator("image_path", mode="after")
+    @classmethod
+    def convert_str_to_path(cls, path):
+        if isinstance(path, str):
+            return Path(path)
         return path
 
     @property
@@ -148,3 +156,10 @@ class InsightPlots(BaseModel):
 
     def count(self) -> int:
         return len(self.plots)
+
+
+class BaseDocument(BaseModel):
+    """Represents a PDF document as a binary content object."""
+
+    binary_content: BinaryContent
+    filename: str
