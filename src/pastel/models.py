@@ -1,6 +1,7 @@
 import base64
 import io
 import os
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Annotated, Literal, Optional
 
@@ -75,6 +76,7 @@ class InsightValidation(BaseModel):
     premises: list[PremiseValidation] = Field(
         description="Validation results for individual claims"
     )
+    errors: list[str] = Field(description="Grammar errors in the insight")
     overall_valid: bool = Field(description="Whether the entire insight is considered valid")
     reasoning: str = Field(description="Summary explanation of validation results")
 
@@ -163,3 +165,10 @@ class BaseDocument(BaseModel):
 
     binary_content: BinaryContent
     filename: str
+
+
+@dataclass
+class EvaluationInput:
+    insight: InsightModel
+    premises: list[PremiseValidation]
+    grammar: GrammarValidation

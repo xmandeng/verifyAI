@@ -1,8 +1,11 @@
 from pydantic_ai import Agent, RunContext
+from pydantic_ai.models import KnownModelName
 
-from pastel.config import ANTHROPIC_MODEL, OPENAI_MODEL
 from pastel.models import AssertionModel, GrammarValidation, InputModel, InsightModel
 from pastel.prompts import CONCLUSION_PROMPT, EVIDENCE_PROMPT, GRAMMAR_PROMPT
+
+OPENAI_MODEL: KnownModelName = "openai:gpt-4o-mini"
+ANTHROPIC_MODEL: KnownModelName = "anthropic:claude-3-5-sonnet-latest"
 
 assertion_agent = Agent(
     model=OPENAI_MODEL,
@@ -44,6 +47,6 @@ grammar_agent = Agent(
 )
 
 
-async def check_grammar(insight: str) -> GrammarValidation:
-    result = grammar_agent.run_sync(insight)
+async def check_grammar(input_data: InputModel | InsightModel) -> GrammarValidation:
+    result = grammar_agent.run_sync(input_data.insight)
     return result.data
