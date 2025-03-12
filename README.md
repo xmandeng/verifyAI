@@ -86,7 +86,44 @@ To configure VS Code to use this environment:
 
 ## Project Overview
 
-[Add information about what your project does here]
+This MVP leverages PydanticAI for insight validation with. Key design choices include:
+
+### Architecture
+
+- **PydanticAI**: Type safety, model provider agnosticism, and automatic output coercion to Pydantic models
+- **Logfire**: Real-time monitoring of token usage and model interactions
+- **Modular validation**: Separate Pydantic models for grammar, premises, and overall assessment, enabling type-safe validation at each stage
+
+### Validation Methodology
+
+We split insights into two key components:
+1. The core conclusion
+2. Supporting evidence or premises
+
+This approach prevents circular validation where the conclusion validates itself. Each compound statement is atomized into discrete premises, ensuring granular assessment against all available evidence.
+
+### Validation Pipeline
+
+1. Extract and isolate the main conclusion using LLM reasoning
+2. Parse remaining text into discrete, testable premises
+3. Validate each premise against relevant data sources (LRS data, charts)
+4. Perform grammar verification as a parallel process
+5. Consolidate all validation results into a comprehensive assessment
+
+When rephrasing premises, we take care to preserve the meaning, ensuring the validation remains true to the original source material.
+
+### Technical Notes
+
+- Architecture natively supports async operations for concurrent validations
+- Token usage must be actively managed to control costs
+- Ability to change models without refactoring codebase
+- Real-time telemetry via Logfire to monitor agent activity and LLM interactions
+
+***
+
+<img width="1278" alt="Screenshot 2025-03-12 at 1 45 50 PM" src="https://github.com/user-attachments/assets/4ba35e2f-a65e-40d7-8e5d-494862621474" />
+
+***
 
 ## License
 
