@@ -4,8 +4,6 @@
 
 This Proof of Concept (PoC) leverages PydanticAI to systematically validate insurance insights by comparing provided statements against supporting evidence. The system evaluates whether claims made about insurance performance metrics are factually accurate based on available data visualizations and tabular information. While this implementation focuses specifically on insurance analytics validation, the approach can be readily extended to other domains requiring factual verification against evidence sources, such as **financial reporting, medical research claims, legal document verification**, or any field where assertions need to be cross-checked against supporting data.
 
-Key design choices include:
-
 ### Architecture
 
 - **PydanticAI**: Type safety, model provider agnosticism, and automatic output coercion to Pydantic models
