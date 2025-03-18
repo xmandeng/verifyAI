@@ -56,3 +56,4 @@ poetry.lock
 
 src/devtools/*
 src/data/*
+src/verifyai/archive/*
