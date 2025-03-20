@@ -8,7 +8,7 @@ import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
 from PIL.Image import Image as PILImage
 
-from pastel.models import BaseImage, InsightModel, InsightPlots
+from verifyai.models import BaseImage, InsightModel, InsightPlots
 
 
 def load_image(file_path: str | Path) -> PILImage:

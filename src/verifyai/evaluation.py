@@ -2,8 +2,8 @@ import pprint
 
 from pydantic_ai import Agent
 
-from pastel.models import GrammarValidation, InsightModel, InsightValidation, PremiseValidation
-from pastel.prompts import CONSOLIDATE_PROMPT
+from verifyai.models import GrammarValidation, InsightModel, InsightValidation, PremiseValidation
+from verifyai.prompts import CONSOLIDATE_PROMPT
 
 consolidator = Agent(
     model="anthropic:claude-3-7-sonnet-latest",
