@@ -54,6 +54,6 @@ poetry.lock
 
 .cursorrules
 
-src/devtools/*
-src/data/*
-src/verifyai/archive/*
+src/devtools/
+src/data/*.png
+src/data/*.docx
