@@ -57,3 +57,4 @@ poetry.lock
 src/devtools/
 src/data/*.png
 src/data/*.docx
+src/data/*
