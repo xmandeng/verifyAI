@@ -6,7 +6,7 @@
     "total_tokens": 621,
 }
 
-❯ python -c "from pastel.prompts import EVIDENCE_PROMPT as text; print(text.format(conclusion=''))" | wc
+❯ python -c "from verifyai.prompts import EVIDENCE_PROMPT as text; print(text.format(conclusion=''))" | wc
       32     286    2260
 """
 

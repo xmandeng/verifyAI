@@ -5,7 +5,7 @@
     "output_tokens": 79,
 }
 
-❯ python -c "from pastel.prompts import GRAMMAR_PROMPT as text; print(text)" | wc
+❯ python -c "from verifyai.prompts import GRAMMAR_PROMPT as text; print(text)" | wc
       27     188    1286
 """
 

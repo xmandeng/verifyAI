@@ -1,8 +1,8 @@
 from pydantic_ai import Agent, RunContext
 from pydantic_ai.models import KnownModelName
 
-from pastel.models import AssertionModel, GrammarValidation, InputModel, InsightModel
-from pastel.prompts import CONCLUSION_PROMPT, EVIDENCE_PROMPT, GRAMMAR_PROMPT
+from verifyai.models import AssertionModel, GrammarValidation, InputModel, InsightModel
+from verifyai.prompts import CONCLUSION_PROMPT, EVIDENCE_PROMPT, GRAMMAR_PROMPT
 
 OPENAI_MODEL: KnownModelName = "openai:gpt-4o-mini"
 ANTHROPIC_MODEL: KnownModelName = "anthropic:claude-3-5-sonnet-latest"

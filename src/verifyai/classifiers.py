@@ -1,6 +1,6 @@
 from pydantic_ai import Agent
 
-from pastel.models import BaseImage, InsightModel, InsightPlots, PremiseValidation
+from verifyai.models import BaseImage, InsightModel, InsightPlots, PremiseValidation
 
 classifier = Agent(
     model="anthropic:claude-3-7-sonnet-latest",
