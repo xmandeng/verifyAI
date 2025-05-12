@@ -11,7 +11,7 @@ assertion_agent = Agent(
     model=OPENAI_MODEL,
     system_prompt=CONCLUSION_PROMPT,
     result_type=AssertionModel,
-    deps_type=InputModel,
+    # deps_type=InputModel,
 )
 
 
